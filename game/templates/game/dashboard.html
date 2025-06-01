@@ -1,0 +1,162 @@
+{% extends 'game/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<style>
+/* (beze změny – tvůj původní CSS zůstává) */
+body, html { height: 100%; }
+.center-outer {
+    min-height: calc(100vh - 240px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+.frame {
+    background: #F5EBDD;
+    border: 2.5px solid #7DC8CF;
+    border-radius: 18px;
+    color: #67442B;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    width: 100%;
+    max-width: 600px;
+    max-height: calc(100vh - 320px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+.frame h2 {
+    color: #67442B;
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+}
+.frame-table-wrapper {
+    width: 100%;
+    max-height: 500px;
+    overflow: auto;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px #7DC8CF22;
+    background: #fff;
+    margin-bottom: 0.2rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+}
+.frame-table-wrapper::-webkit-scrollbar {
+    display: none;
+}
+.frame table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+}
+.frame th, .frame td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid #7DC8CF44;
+    color: #67442B;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.frame th {
+    background: #7DC8CF;
+    color: #67442B;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.frame tr:last-child td {
+    border-bottom: none;
+}
+.frame .btn-primary, .frame .control-btn {
+    background: #FDC571;
+    color: #67442B;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.8rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    min-width: 140px;
+    transition: background 0.2s, color 0.2s;
+    margin-top: 1rem;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.frame .btn-primary:hover, .frame .control-btn:hover {
+    background: #67442B;
+    color: #fff;
+}
+@media (max-width: 600px) {
+    .frame {
+        padding: 1rem 0.2rem;
+        max-width: 98vw;
+        min-width: unset;
+    }
+    .frame h2 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    .frame-table-wrapper {
+        max-height: 300px;
+        border-radius: 14px;
+        margin-bottom: 0.1rem;
+    }
+    .frame table {
+        font-size: 0.95rem;
+    }
+    .frame th, .frame td {
+        padding: 0.5rem 0.2rem 0.5rem 0rem;
+        min-width: 60px;
+    }
+    .frame .btn-primary, .frame .control-btn {
+        min-width: 100px;
+        font-size: 1rem;
+        padding: 0.5rem 1.2rem;
+    }
+}
+</style>
+
+<div class="center-outer">
+    <div class="frame">
+        <h2>Dashboard</h2>
+        <h2 style="font-size: 1.3rem; color: #7DC8CF; margin-bottom: 1.2rem;">Top hráči</h2>
+        <div class="frame-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Hráč</th>
+                        <th>Skóre</th>
+                        <th>Datum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ result.user.nickname }}</td>
+                        <td>{{ result.score }}</td>
+                        <td>{{ result.created_at|date:"d.m.Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">Zatím žádné výsledky.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'play' %}" class="btn btn-primary" style="margin-top: 0.2rem;">Hrát hru</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

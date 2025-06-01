@@ -1,0 +1,355 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Toast Game{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'game/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/static/game/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/static/game/favicon.svg" />
+    <link rel="shortcut icon" href="/static/game/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/game/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="ToastGame" />
+    <link rel="manifest" href="/static/game/site.webmanifest" />
+    <style>
+        :root {
+            background-color: #7DC8CF;
+            font-family: system-ui;
+            font-variant-numeric: tabular-nums;
+        }
+
+        *,
+        :after,
+        :before {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        svg {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 900;
+            max-width: 100%;
+            height: auto;
+            max-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            background: lightblue;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .navbar {
+            width: 100%;
+            background-color: #F5EBDD;
+            padding: 0.4rem 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .nav-logo {
+            color: #67442B;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin-right: 2rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: #67442B;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: color 0.2s ease;
+            display: block;
+        }
+
+        .nav-link:hover {
+            color: #8B5A2B;
+        }
+
+        .footer {
+            background-color: #F5EBDD;
+            padding: 1.5rem 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer p {
+            text-align: center;
+            color: #67442B;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .footer a {
+            color: #67442B;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: #FDC571;
+        }
+
+        /* Oprava Bootstrap 5.3.3: zajistí viditelnost toastů v SVG */
+        svg use {
+            display: inline !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .frame {
+            width: 90%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 1rem;
+            background: #67442b;
+            border: 6px solid #67442b;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .frame h1,
+        .frame p {
+            color: #FDC571;
+        }
+
+        .frame h1 {
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+        }
+
+        .frame p {
+            margin-bottom: 2rem;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            line-height: 1.6;
+        }
+
+        .frame .btn-primary {
+            background-color: #FDC571;
+            color: #67442B;
+            border: none;
+            padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1.5rem, 4vw, 2rem);
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            width: 90%;
+            max-width: 300px;
+        }
+
+        .frame .btn-primary:hover {
+            background-color: #FEECBF;
+        }
+
+        #game {
+            border-radius: 10px;
+            user-select: none;
+            display: block;
+            margin: 0;
+        }
+
+        .toast {
+            cursor: pointer;
+        }
+
+        .toast__wings {
+            animation: wings-flapping linear infinite 0.4s;
+            transform-origin: center 85%;
+            pointer-events: none;
+        }
+
+        .toast__eyes {
+            animation: blink linear infinite 2s;
+            transform-origin: 15px;
+        }
+
+        @keyframes wings-flapping {
+
+            0%,
+            100% {
+                scale: 1 1;
+            }
+
+            50% {
+                scale: 1 0.8;
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            90% {
+                scale: 1 1;
+            }
+
+            100% {
+                scale: 1 0;
+            }
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            background: #67442b;
+            border-radius: 0 0 10px 10px;
+            margin-top: -6px;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #FDC571;
+            color: #67442B;
+            transition: all 0.2s ease;
+            min-width: 80px;
+        }
+
+        .control-btn:hover {
+            background: #FEECBF;
+        }
+
+        .control-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin: 0;
+            padding: 8px 16px;
+            background: #FDC571;
+            color: #67442B;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 80px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background: #FEECBF;
+            color: #67442B;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0;
+            /* nebo !important pokud máš Bootstrap */
+        }
+
+        footer.footer {
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+            .frame {
+                padding: 0.8rem;
+            }
+
+            .frame h1 {
+                margin-bottom: 1rem;
+            }
+
+            .frame p {
+                margin-bottom: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% block nav %}
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="{% static 'game/logo.webp' %}" alt="ToastGame"
+                    style="height:50px;width:auto;vertical-align:middle;">
+            </a>
+            <ul class="nav-menu">
+                {% if user.is_authenticated %}
+                <li>
+                    <a href="{% url 'logout' %}" class="nav-link">Odhlásit</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p>Web&Apps by <a href="https://moje-webovka.cz" target="_blank">just_marrty</a></p>
+            <p>&copy; {{ current_year|default:2025 }} ToastGame. Všechna práva vyhrazena.</p>
+        </div>
+    </footer>
+    {% endblock %}
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'game/bootstrap.bundle.min.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,111 @@
+{% extends "game/base.html" %}
+{% load static %}
+
+{% block title %}Toast Game{% endblock %}
+
+{% block content %}
+<style>
+    .game-frame {
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+        padding: 0.5rem 0.5rem 0rem 0.5rem;
+        background: #67442b;
+        border: 6px solid #67442b;
+        border-radius: 16px;
+        text-align: center;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px;
+        background: #67442b;
+        border-radius: 0 0 10px 10px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+    }
+
+    .control-btn, .btn-back {
+        padding: 8px 16px;
+        font-size: clamp(0.9rem, 3vw, 1rem);
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background: #FDC571;
+        color: #67442B;
+        transition: all 0.2s ease;
+        min-width: 80px;
+        flex: 1;
+        max-width: 120px;
+    }
+
+    .control-btn:hover, .btn-back:hover {
+        background: #FEECBF;
+    }
+
+    .control-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 480px) {
+        body {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        main {
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .py-4 {
+            padding-top: 0px !important;
+            padding-bottom: 50px !important;
+        }
+
+        .game-frame {
+            padding: 0.5rem 0.5rem 0rem 0.5rem;
+            border-width: 4px;
+        }
+
+        .controls {
+            gap: 5px;
+            padding: 8px;
+            margin-top: 0px;
+        }
+
+        .control-btn, .btn-back {
+            padding: 6px 12px;
+            min-width: 70px;
+        }
+    }
+</style>
+
+<div class="frame game-frame">
+    <!-- SVG GAME -->
+    {% include "game/svg_snippet.html" %}
+    <!-- Ovládací prvky -->
+    <div class="controls">
+        <button id="pauseBtn" class="control-btn">Pause</button>
+        <button id="playBtn" class="control-btn" disabled>Resume</button>
+        <button id="stopBtn" class="control-btn">Stop</button>
+        <a href="{% url 'dashboard' %}" class="btn-back">Zpět</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'game/script.js' %}"></script>
+{% endblock %}
+
+{% block nav %}{% endblock %}
+{% block footer %}{% endblock %}
+

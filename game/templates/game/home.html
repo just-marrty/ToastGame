@@ -1,0 +1,66 @@
+{% extends 'game/base.html' %}
+
+{% block title %}Úvod{% endblock %}
+
+{% block content %}
+<style>
+body, html {
+    height: 100%;
+}
+.center-outer {
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+.frame {
+    background: #F5EBDD;
+    border: 2.5px solid #7DC8CF;
+    border-radius: 18px;
+    color: #67442B;
+    text-align: center;
+    padding: 2.5rem 2rem;
+    max-width: 500px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+.frame h1 {
+    color: #67442B;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+.frame p {
+    color: #67442B;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+.frame .btn-primary {
+    background: #FDC571;
+    color: #67442B;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    min-width: 160px;
+    transition: background 0.2s, color 0.2s;
+}
+.frame .btn-primary:hover {
+    background: #67442B;
+    color: #fff;
+}
+</style>
+<div class="center-outer">
+  <div class="frame">
+      <h1>Vítej v ToastGame!</h1>
+      <p>Tato hra je zaměřena na rychlost a přesnost. 
+          V této hře se budeš snažit získat co nejvíce bodů a soutěžit s ostatními hráči o co nejvyšší skóre.</p>
+      <a href="{% url 'login' %}" class="btn btn-primary">
+          Vstoupit
+      </a>
+  </div>
+</div>
+{% endblock %}
+

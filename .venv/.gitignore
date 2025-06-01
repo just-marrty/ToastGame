@@ -1,0 +1,6 @@
+# Ignoruj .env soubor s citlivými daty
+.env
+db.sqlite3
+__pycache__/
+*.pyc
+/staticfiles

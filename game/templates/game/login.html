@@ -1,0 +1,751 @@
+{% extends 'game/base.html' %}
+
+{% block title %}Přihlášení{% endblock %}
+
+{% block content %}
+
+<style>
+    .login-register-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem 1rem;
+    }
+
+    .login-register-container {
+        width: 800px;
+        height: 520px;
+        max-width: 98vw;
+        max-height: 98vh;
+        min-width: 320px;
+        min-height: 420px;
+        background: none;
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+        position: relative;
+        overflow: hidden;
+        display: block;
+        transition: box-shadow 0.3s;
+    }
+
+    .form-panel {
+        position: absolute;
+        top: 0;
+        width: 50%;
+        height: 100%;
+        background: #fff;
+        padding: 3rem 2.5rem 2.5rem 2.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+        box-sizing: border-box;
+    }
+
+    .form-panel h2 {
+        color: #67442B;
+        font-weight: bold;
+        margin-bottom: 1.2rem;
+        margin-top: 0.5rem;
+    }
+
+    .form-panel form {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        margin: 0.5rem 0 1rem 0;
+        border: 1px solid #FDC571;
+        border-radius: 8px;
+        background: #fff;
+        color: #67442b;
+        font-size: 1rem;
+        outline: none;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+        transition: box-shadow 0.2s, border 0.2s;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 2px 8px #FDC57155;
+        border: 1.5px solid #FDC571;
+    }
+
+    .btn-primary {
+        width: 100%;
+        background: #FDC571;
+        color: #67442B;
+        border: none;
+        border-radius: 8px;
+        padding: 0.8rem 2.2rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+        box-shadow: 0 2px 8px #FDC57133;
+        box-sizing: border-box;
+    }
+
+    .btn-primary:hover {
+        background: #FEECBF;
+        color: #67442B;
+    }
+
+    .btn-outline-light {
+        background: transparent;
+        color: #fff;
+        border: 2px solid #fff;
+        border-radius: 8px;
+        padding: 0.7rem 2rem;
+        font-size: 1rem;
+        font-weight: bold;
+        margin-top: 1rem;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-outline-light:hover {
+        background: #fff;
+        color: #67442B;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .mt-3 {
+        margin-top: 1.2rem;
+    }
+
+    /* Overlay panel */
+    .overlay-panel-custom {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 50%;
+        height: 100%;
+        background: #67442B !important;
+        color: #F5EBDD;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        box-sizing: border-box;
+    }
+
+    .overlay-panel-custom .btn-outline-light {
+        background: #7DC8CF !important;
+        color: #67442B !important;
+        border: 2px solid #7DC8CF !important;
+        transition: transform 0.18s cubic-bezier(.4, 1.3, .6, 1), background 0.2s, color 0.2s, border 0.2s;
+        cursor: pointer;
+    }
+
+    .overlay-panel-custom .btn-outline-light:hover {
+        transform: scale(1.08);
+    }
+
+    .overlay-panel-custom .btn-outline-light.no-scale,
+    .overlay-panel-custom .btn-outline-light.no-scale:hover {
+        transform: none !important;
+    }
+
+    .overlay-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        max-width: 280px;
+        text-align: center;
+        display: none;
+    }
+
+    .overlay-login {
+        display: block;
+    }
+
+    .overlay-register {
+        display: none;
+    }
+
+    .login-register-container.register-mode .overlay-panel-custom {
+        transform: translateX(-100%);
+    }
+
+    .login-register-container.register-mode .overlay-login {
+        display: none;
+    }
+
+    .login-register-container.register-mode .overlay-register {
+        display: block;
+    }
+
+    .login-register-container.register-mode .form-panel-login {
+        background: #F5EBDD !important;
+    }
+
+    .login-register-container.register-mode .form-panel-register {
+        background: #F5EBDD !important;
+    }
+
+    .form-panel-login {
+        left: 0;
+        background: #F5EBDD !important;
+    }
+
+    .form-panel-login .form-control {
+        background: #F5EBDD;
+        color: #67442B;
+        border: 1.5px solid #7DC8CF;
+    }
+
+    .form-panel-login .form-control:focus {
+        background: #F5EBDD;
+        color: #67442B;
+        border: 1.5px solid #7DC8CF;
+    }
+
+    .form-panel-login .form-control:-webkit-autofill,
+    .form-panel-login .form-control:-webkit-autofill:focus,
+    .form-panel-login .form-control:-webkit-autofill:hover,
+    .form-panel-login .form-control:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px #F5EBDD inset !important;
+        box-shadow: 0 0 0 1000px #F5EBDD inset !important;
+        -webkit-text-fill-color: #67442B !important;
+        color: #67442B !important;
+        border: 1.5px solid #7DC8CF;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .form-panel-login form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-panel-login .btn-primary {
+        width: auto;
+        min-width: 160px;
+    }
+
+    .form-panel-login .btn-primary:hover {
+        background: #67442B;
+        color: #fff;
+    }
+
+    .form-panel-login .forgot-link {
+        color: #67442B;
+        font-weight: bold;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .form-panel-login .forgot-link:hover {
+        color: #FDC571;
+    }
+
+    .form-panel-register {
+        left: 50%;
+        background: #F5EBDD !important;
+    }
+
+    .form-panel-register .form-control {
+        background: #F5EBDD;
+        color: #67442B;
+        border: 1.5px solid #7DC8CF;
+    }
+
+    .form-panel-register .form-control:focus {
+        background: #F5EBDD;
+        color: #67442B;
+        border: 1.5px solid #7DC8CF;
+    }
+
+    .form-panel-register .form-control:-webkit-autofill,
+    .form-panel-register .form-control:-webkit-autofill:focus,
+    .form-panel-register .form-control:-webkit-autofill:hover,
+    .form-panel-register .form-control:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px #F5EBDD inset !important;
+        box-shadow: 0 0 0 1000px #F5EBDD inset !important;
+        -webkit-text-fill-color: #67442B !important;
+        color: #67442B !important;
+        border: 1.5px solid #7DC8CF;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .form-panel-register form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-panel-register .btn-primary {
+        width: auto;
+        min-width: 160px;
+    }
+
+    .form-panel-register .btn-primary:hover {
+        background: #67442B;
+        color: #fff;
+    }
+
+    .overlay-panel-custom .btn-outline-light.temp-default {
+        cursor: default !important;
+    }
+
+    .switch-register-bar,
+    .switch-login-bar {
+        width: auto;
+        min-width: 160px;
+        background: #7DC8CF !important;
+        color: #67442B !important;
+        border: 2px solid #7DC8CF !important;
+        border-radius: 8px;
+        padding: 0.7rem 2rem;
+        text-align: center;
+        margin-top: 0rem;
+        cursor: pointer;
+        transition: transform 0.18s cubic-bezier(.4, 1.3, .6, 1), background 0.2s, color 0.2s, border 0.2s;
+        font-weight: bold;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+        box-sizing: border-box;
+        display: inline-block;
+    }
+
+    .switch-register-bar:hover,
+    .switch-login-bar:hover {
+        transform: scale(1.08);
+    }
+
+    .switch-register-bar span,
+    .switch-login-bar span {
+        color: #67442B !important;
+        font-weight: bold;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+        .login-register-container {
+            width: 98vw;
+            height: auto;
+            min-width: unset;
+            max-width: 98vw;
+        }
+
+        .form-panel,
+        .overlay-panel-custom {
+            position: static;
+            width: 100%;
+            min-width: unset;
+            height: auto;
+            transform: none !important;
+            box-shadow: none;
+        }
+
+        .form-panel form {
+            max-width: 100%;
+        }
+
+        .overlay-content {
+            position: relative;
+            top: 0;
+            left: 0;
+            transform: none;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .form-panel-login {
+            display: flex;
+        }
+
+        .form-panel-register {
+            display: none;
+        }
+
+        .login-register-container.register-mode .form-panel-login {
+            display: none;
+        }
+
+        .login-register-container.register-mode .form-panel-register {
+            display: flex;
+        }
+
+        .overlay-login,
+        .overlay-register {
+            display: none;
+        }
+
+        .login-register-container.register-mode .overlay-login {
+            display: none;
+        }
+
+        .login-register-container.register-mode .overlay-register {
+            display: block;
+        }
+
+        .switch-register-bar {
+            display: block !important;
+        }
+
+        .switch-login-bar {
+            display: block !important;
+        }
+
+        .overlay-panel-custom {
+            display: none !important;
+        }
+
+        .tab-switcher {
+            margin-bottom: 0 !important;
+        }
+
+        .tab-btn {
+            font-size: 1rem;
+            padding: 0.8rem 0.2rem;
+        }
+
+        .forgot-link {
+            display: inline-block;
+        }
+
+        .forgot-mobile {
+            display: block !important;
+        }
+
+        .form-panel-login .forgot-link:not(.forgot-mobile a) {
+            display: none !important;
+        }
+
+        .switch-register-bar {
+            width: 100%;
+            background: #67442B;
+            border-radius: 8px;
+            padding: 0.7rem 0;
+            text-align: center;
+            margin-top: 0.7rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        .switch-register-bar span {
+            color: #FDC571;
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+
+        .switch-register-bar span:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .switch-login-bar {
+            width: 100%;
+            background: #67442B;
+            border-radius: 8px;
+            padding: 0.7rem 0;
+            text-align: center;
+            margin-top: 0.7rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        .switch-login-bar span {
+            color: #FDC571;
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+
+        .switch-login-bar span:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .switch-login-bar {
+                display: block !important;
+            }
+        }
+
+        .tab-switcher {
+            display: flex;
+            width: 100%;
+            margin-bottom: 0 !important;
+            border-bottom: 2px solid #7DC8CF;
+            background: #F5EBDD;
+            border-radius: 18px 18px 0 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem 0.5rem;
+            border: none;
+            background: none;
+            color: #67442B;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: color 0.2s, border-bottom 0.2s;
+            background: #F5EBDD;
+        }
+
+        .tab-btn.active {
+            color: #67442B;
+            background: #FDC571;
+            border-bottom: 3px solid #FDC571;
+            z-index: 2;
+        }
+
+        @media (max-width: 768px) {
+            .tab-switcher {
+                margin-bottom: 0 !important;
+            }
+
+            .tab-btn {
+                font-size: 1rem;
+                padding: 0.8rem 0.2rem;
+            }
+        }
+
+        /* Skryji mobilní přepínače a overlay panel */
+        .switch-register-bar,
+        .switch-login-bar,
+        .overlay-panel-custom {
+            display: none !important;
+        }
+    }
+    .form-error {
+        color: red;
+        font-size: 0.85rem;
+        margin-top: -0.5rem;
+        margin-bottom: 0.8rem;
+        text-align: left;
+        width: 100%;
+    }
+</style>
+
+<div class="login-register-wrapper">
+    <div class="login-register-container" id="loginRegisterContainer">
+
+        <!-- Taby pro mobil -->
+        <div class="tab-switcher">
+            <button id="tabLogin" class="tab-btn active" type="button">Přihlášení</button>
+            <button id="tabRegister" class="tab-btn" type="button">Registrace</button>
+        </div>
+
+        <!-- Přihlašovací panel -->
+        <div class="form-panel form-panel-login {% if active_tab == 'login' %}active{% endif %}" id="loginPanel">
+            <h2>Přihlášení</h2>
+            <form id="loginForm" method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="login" value="1">
+
+                <input type="email" name="email" class="form-control" placeholder="Email" required>
+                <p class="form-error" id="login-email-error"></p>
+
+                <input type="password" name="password" class="form-control" placeholder="Heslo" required>
+                <p class="form-error" id="login-password-error"></p>
+
+                <div class="text-center mt-3 forgot-mobile">
+                    <a href="{% url 'password_reset' %}" class="forgot-link">Zapomenuté heslo?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Přihlásit se</button>
+            </form>
+        </div>
+
+
+        <!-- Registrační panel -->
+        <div class="form-panel form-panel-register {% if active_tab == 'register' %}active{% endif %}"
+             id="registerPanel">
+            <h2>Registrace</h2>
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="register" value="1">
+
+                <!-- Email -->
+                <input type="email" name="email" class="form-control" placeholder="Email" required>
+                <p class="form-error" id="email-error"></p>
+
+                <!-- Přezdívka -->
+                <input type="text" name="nickname" class="form-control" placeholder="Přezdívka" required>
+                <p class="form-error" id="nickname-error"></p>
+
+                <!-- Heslo -->
+                <input type="password" name="password1" class="form-control" placeholder="Heslo" required>
+                <p class="form-error" id="password-error"></p>
+
+                <!-- Potvrzení hesla -->
+                <input type="password" name="password2" class="form-control" placeholder="Potvrzení hesla" required>
+                <p class="form-error" id="confirm-error"></p>
+
+                <button type="submit" class="btn btn-primary">Registrovat se</button>
+            </form>
+        </div>
+
+        <!-- Overlay panel pro desktop -->
+        <div class="overlay-panel-custom">
+            <div class="overlay-content overlay-login">
+                <h2>Ahoj!</h2>
+                <p>Ještě nemáš účet? Zaregistruj se.</p>
+                <div class="switch-register-bar" id="switchToRegister">
+                    Registrovat
+                </div>
+            </div>
+            <div class="overlay-content overlay-register">
+                <h2>Vítej zpět!</h2>
+                <p>Pokud máš účet, přihlas se.</p>
+                <div class="switch-login-bar" id="switchToLogin">
+                    Přihlásit
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // === Přepínání panelů ===
+        const container = document.getElementById('loginRegisterContainer');
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+        const loginPanel = document.getElementById('loginPanel');
+        const registerPanel = document.getElementById('registerPanel');
+
+        const switchToLogin = document.getElementById('switchToLogin');
+        const switchToRegister = document.getElementById('switchToRegister');
+        const desktopSwitchToLogin = document.getElementById('desktopSwitchToLogin');
+        const desktopSwitchToRegister = document.getElementById('desktopSwitchToRegister');
+
+        function activateLogin() {
+            container.classList.remove('register-mode');
+            loginPanel.classList.add('active');
+            registerPanel.classList.remove('active');
+            tabLogin?.classList.add('active');
+            tabRegister?.classList.remove('active');
+        }
+
+        function activateRegister() {
+            container.classList.add('register-mode');
+            loginPanel.classList.remove('active');
+            registerPanel.classList.add('active');
+            tabLogin?.classList.remove('active');
+            tabRegister?.classList.add('active');
+        }
+
+        tabLogin?.addEventListener('click', activateLogin);
+        tabRegister?.addEventListener('click', activateRegister);
+        switchToLogin?.addEventListener('click', activateLogin);
+        switchToRegister?.addEventListener('click', activateRegister);
+        desktopSwitchToLogin?.addEventListener('click', activateLogin);
+        desktopSwitchToRegister?.addEventListener('click', activateRegister);
+
+        {% if active_tab == 'register' %}
+            activateRegister();
+        {% else %}
+            activateLogin();
+        {% endif %}
+
+        // === Live validace (registrace) ===
+        const emailInput = document.querySelector('#registerPanel input[name="email"]');
+        const nicknameInput = document.querySelector('#registerPanel input[name="nickname"]');
+        const passwordInput = document.querySelector('#registerPanel input[name="password1"]');
+        const confirmInput = document.querySelector('#registerPanel input[name="password2"]');
+
+        const emailError = document.getElementById('email-error');
+        const nicknameError = document.getElementById('nickname-error');
+        const passwordError = document.getElementById('password-error');
+        const confirmError = document.getElementById('confirm-error');
+
+        emailInput?.addEventListener('blur', function () {
+            const email = emailInput.value.trim();
+            if (email.length < 5 || !email.includes('@')) {
+                emailError.textContent = 'Zadej platný e-mail.';
+                return;
+            }
+
+            fetch(`/ajax/check-email/?email=${encodeURIComponent(email)}`)
+                .then(res => res.json())
+                .then(data => {
+                    emailError.textContent = data.exists ? 'Tento e-mail už je registrovaný.' : '';
+                })
+                .catch(() => {
+                    emailError.textContent = 'Chyba při ověřování e-mailu.';
+                });
+        });
+
+        nicknameInput?.addEventListener('blur', function () {
+            const nickname = nicknameInput.value.trim();
+            if (nickname.length < 2) return;
+
+            fetch(`/ajax/check-nickname/?nickname=${encodeURIComponent(nickname)}`)
+                .then(res => res.json())
+                .then(data => {
+                    nicknameError.textContent = data.exists ? 'Tato přezdívka už je zabraná.' : '';
+                })
+                .catch(() => {
+                    nicknameError.textContent = 'Chyba při ověřování přezdívky.';
+                });
+        });
+
+        passwordInput?.addEventListener('input', function () {
+            const password = passwordInput.value;
+            const isValid = password.length >= 8 && /\d/.test(password) && /[A-Za-z]/.test(password);
+            passwordError.textContent = isValid ? '' : 'Heslo musí mít alespoň 8 znaků a obsahovat číslo i písmeno.';
+            checkPasswordsMatch();
+        });
+
+        confirmInput?.addEventListener('input', checkPasswordsMatch);
+
+        function checkPasswordsMatch() {
+            const pwd1 = passwordInput.value;
+            const pwd2 = confirmInput.value;
+            confirmError.textContent = (pwd1 === pwd2 || !pwd2) ? '' : 'Hesla se neshodují.';
+        }
+
+        // === AJAX validace přihlášení ===
+        const loginForm = document.getElementById('loginForm');
+        const loginEmailError = document.getElementById('login-email-error');
+        const loginPasswordError = document.getElementById('login-password-error');
+
+        loginForm?.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(loginForm);
+
+            fetch("{% url 'ajax_login_validate' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                loginEmailError.textContent = data.errors?.email || '';
+                loginPasswordError.textContent = data.errors?.password || '';
+                if (data.success) loginForm.submit();
+            })
+            .catch(() => {
+                loginEmailError.textContent = 'Chyba při ověřování.';
+            });
+        });
+    });
+</script>
+
+{% endblock %}
