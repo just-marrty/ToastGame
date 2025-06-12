@@ -1,0 +1,170 @@
+{% extends 'game/base.html' %}
+{% load static %}
+
+{% block title %}Zásady ochrany soukromí - ToastGame{% endblock %}
+
+{% block style %}
+<style>
+    .privacy-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+        background-color: var(--background-color, #f4f4f4);
+    }
+
+    .privacy-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        max-width: 800px;
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+
+    .privacy-title {
+        color: var(--primary-color, #007bff);
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+    }
+
+    .privacy-date {
+        color: var(--text-muted, #6c757d);
+        margin-bottom: 2rem;
+    }
+
+    .privacy-section {
+        margin-bottom: 2rem;
+    }
+
+    .privacy-section h4 {
+        color: var(--primary-color, #007bff);
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+    }
+
+    .privacy-section h5 {
+        color: var(--primary-color, #007bff);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .privacy-section p {
+        color: var(--text-color, #212529);
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+
+    .privacy-section ul {
+        color: var(--text-color, #212529);
+        margin: 0 auto 1rem;
+        padding: 0;
+        list-style: none;
+    }
+
+    .privacy-section li {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+
+    .privacy-section a {
+        color: var(--primary-color, #007bff);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .privacy-section a:hover {
+        color: var(--primary-hover, #0056b3);
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="privacy-wrapper">
+    <div class="privacy-card">
+        <h1 class="privacy-title">Zásady ochrany osobních údajů</h1>
+        <p class="privacy-date">Platné od: 9. 6. 2025</p>
+
+        <div class="privacy-section">
+            <h5>Provozovatel webu:</h5>
+            <p>fyzická osoba – nepodnikatel</p>
+
+            <h5>Název služby:</h5>
+            <p>Todo aplikace (<a href="https://toastgame.onrender.com"
+                    target="_blank">https://toastgame.onrender.com</a>)</p>
+
+            <h5>Kontaktní e-mail:</h5>
+            <p><a href="mailto:justmarrty@gmail.com">justmarrty@gmail.com</a></p>
+        </div>
+
+        <div class="privacy-section">
+            <h4>1. Jaké osobní údaje zpracovávám?</h4>
+            <p>Při registraci a používání aplikace zpracovávám následující údaje:</p>
+            <ul>
+                <li>E-mailová adresa (povinná pro vytvoření účtu)</li>
+                <li>Heslo (uloženo bezpečně ve formě hashovaného otisku, nikdy ne v čitelné podobě)</li>
+                <li>Údaje zadané v rámci todo úkolů (text úkolů, poznámky apod.)</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h4>2. Proč tyto údaje zpracovávám?</h4>
+            <p>Údaje zpracovávám výhradně za účelem:</p>
+            <ul>
+                <li>vytvoření a správy uživatelského účtu,</li>
+                <li>zajištění přihlášení a bezpečného přístupu do aplikace,</li>
+                <li>uchování a zobrazení vašich todo úkolů.</li>
+            </ul>
+            <p>Údaje nejsou využívány k marketingovým účelům, nepředávám je třetím stranám.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h4>3. Kdo má k údajům přístup?</h4>
+            <p>Vaše data jsou uložena na serveru aplikace a v databázi PostgreSQL, přístup k nim má pouze provozovatel
+                webu. Aplikace nepředává data žádné třetí straně.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h4>4. Jak dlouho údaje uchovávám?</h4>
+            <p>Vaše údaje uchovávám po dobu existence vašeho účtu. Účet lze kdykoli zrušit – tím dojde k trvalému výmazu
+                dat z databáze.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h4>5. Vaše práva podle GDPR</h4>
+            <p>Máte právo:</p>
+            <ul>
+                <li>požádat o přístup ke svým osobním údajům,</li>
+                <li>požádat o opravu nebo výmaz údajů,</li>
+                <li>podat stížnost u Úřadu pro ochranu osobních údajů: <a href="https://www.uoou.cz"
+                        target="_blank">www.uoou.cz</a></li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h4>6. Cookies</h4>
+            <p>Tato aplikace používá pouze technické cookies, nezbytné pro:</p>
+            <ul>
+                <li>přihlášení uživatele (sessionid),</li>
+                <li>ochranu formulářů proti zneužití (csrftoken).</li>
+            </ul>
+            <p>Tyto cookies jsou nutné pro bezpečné a správné fungování aplikace. Nepoužíváme žádné analytické,
+                sledovací ani marketingové cookies.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h4>7. Kontakt</h4>
+            <p>V případě dotazů ohledně zpracování osobních údajů mě můžete kontaktovat na: <a
+                    href="mailto:justmarrty@gmail.com">justmarrty@gmail.com</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

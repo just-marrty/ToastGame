@@ -307,6 +307,18 @@
                 margin-bottom: 1.5rem;
             }
         }
+
+        @media screen and (min-width: 768px) and (max-width: 1024px) {
+            svg#game {
+                width: 100%;
+                height: auto;
+            }
+
+            .toast {
+                pointer-events: auto;
+                touch-action: manipulation;
+            }
+        }
     </style>
 </head>
 
@@ -316,7 +328,7 @@
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="/" class="nav-logo">
+            <a class="nav-logo">
                 <img src="{% static 'game/logo.webp' %}" alt="ToastGame"
                     style="height:50px;width:auto;vertical-align:middle;">
             </a>
@@ -342,6 +354,9 @@
         <div class="container text-center">
             <p>Web&Apps by <a href="https://moje-webovka.cz" target="_blank">just_marrty</a></p>
             <p>&copy; {{ current_year|default:2025 }} ToastGame. Všechna práva vyhrazena.</p>
+            <p>
+                <a href="{% url 'privacy_policy' %}" class="footer-link">Zásady ochrany soukromí</a>
+            </p>
         </div>
     </footer>
     {% endblock %}
