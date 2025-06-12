@@ -178,3 +178,9 @@ class SimplePasswordResetConfirmView(PasswordResetConfirmView):
 
 class SimplePasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'tasks/password_reset_complete.html'
+
+def password_reset_done(request):
+    return render(request, 'game/password_reset_done.html')
+
+def privacy_policy(request):
+    return render(request, 'game/privacy_policy.html')
