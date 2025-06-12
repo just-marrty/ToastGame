@@ -15,11 +15,16 @@ class Game {
         this.remainingLives = 5;
         this.gameOver = false;
         this.isPaused = false;
-        this.gameStartTime = performance.now();
-        this.lastDifficultyIncrease = performance.now();
         this.difficultyLevel = 1;
         this.toastsPerSpawn = 1;
         this.baseDuration = 2500;
+
+        this.elapsedTime = 0;
+        this.lastTimestamp = null;
+        this.pauseTime = 0;
+        this.lastDifficultyIncrease = 0;
+        this.rafId = null;
+
         this.loop = this.loop.bind(this);
 
         this.pauseBtn.addEventListener('click', () => this.pauseGame());
@@ -28,34 +33,31 @@ class Game {
 
         this.startSpawnTimer();
         this.updateLives();
-        requestAnimationFrame(this.loop);
-    }
-
-    updateDifficulty() {
-        const currentTime = performance.now();
-        const timeSinceLastIncrease = (currentTime - this.lastDifficultyIncrease) / 1000;
-
-        if (timeSinceLastIncrease >= 20) {
-            this.difficultyLevel++;
-            this.lastDifficultyIncrease = currentTime;
-            this.toastsPerSpawn = Math.min(5, 1 + Math.floor(this.difficultyLevel / 2));
-            this.spawnInterval = Math.max(200, 1500 - (this.difficultyLevel - 1) * 150);
-            this.toasts.forEach(toast => {
-                toast.duration = this.getToastDuration();
-            });
-
-            // Restart spawn timer with new interval
-            this.startSpawnTimer();
-        }
+        this.rafId = requestAnimationFrame(this.loop);
     }
 
     getToastDuration() {
         return Math.max(1000, this.baseDuration - (this.difficultyLevel - 1) * 200);
     }
 
+    updateDifficulty() {
+        const timeSinceLastIncrease = (this.elapsedTime - this.lastDifficultyIncrease) / 1000;
+        if (timeSinceLastIncrease >= 20) {
+            this.difficultyLevel++;
+            this.lastDifficultyIncrease = this.elapsedTime;
+            this.toastsPerSpawn = Math.min(5, 1 + Math.floor(this.difficultyLevel / 2));
+            this.spawnInterval = Math.max(200, 1500 - (this.difficultyLevel - 1) * 150);
+            this.toasts.forEach(toast => {
+                toast.duration = this.getToastDuration();
+            });
+            this.startSpawnTimer();
+        }
+    }
+
     pauseGame() {
         if (!this.gameOver) {
             this.isPaused = true;
+            this.pauseTime = performance.now();
             this.pauseBtn.disabled = true;
             this.playBtn.disabled = false;
             clearInterval(this.spawnTimer);
@@ -63,10 +65,14 @@ class Game {
     }
 
     resumeGame() {
-        if (!this.gameOver) {
-            this.isPaused = false;
+        if (!this.gameOver && this.isPaused) {
+            const now = performance.now();
+            const pauseDuration = now - this.pauseTime;
+            this.lastTimestamp += pauseDuration; // posuň čas, aby delta nebyla velká
+
             this.pauseBtn.disabled = false;
             this.playBtn.disabled = true;
+            this.isPaused = false;
             this.startSpawnTimer();
         }
     }
@@ -108,7 +114,7 @@ class Game {
                 endX,
                 startY: 680,
                 peakY,
-                startTime: performance.now(),
+                startTime: this.elapsedTime, // ⬅ relativní čas!
                 duration: this.getToastDuration(),
                 clicked: false,
                 upwardSpeed: -8,
@@ -125,22 +131,22 @@ class Game {
         }
     }
 
-    checkGameOver() {
-        if (this.remainingLives <= 0) {
-            this.stopGame();
-        }
-    }
-
     loop(timestamp) {
-        if (this.gameOver || this.isPaused) {
-            requestAnimationFrame(this.loop);
-            return;
+        this.rafId = requestAnimationFrame(this.loop);
+
+        if (this.gameOver || this.isPaused) return;
+
+        if (this.lastTimestamp === null) {
+            this.lastTimestamp = timestamp;
         }
+
+        const delta = timestamp - this.lastTimestamp;
+        this.lastTimestamp = timestamp;
+        this.elapsedTime += delta;
 
         this.updateDifficulty();
 
         this.toasts = this.toasts.filter(toast => {
-            const t = (timestamp - toast.startTime) / toast.duration;
             if (toast.clicked) {
                 const currentY = parseFloat(toast.el.getAttribute('y'));
                 const newY = currentY + toast.upwardSpeed;
@@ -151,6 +157,7 @@ class Game {
                     return false;
                 }
             } else {
+                const t = (this.elapsedTime - toast.startTime) / toast.duration;
                 if (t > 1) {
                     if (!toast.reachedBottom) {
                         this.remainingLives--;
@@ -168,12 +175,16 @@ class Game {
             }
             return true;
         });
-
-        requestAnimationFrame(this.loop);
     }
 
     updateLives() {
         this.livesEl.textContent = `${this.remainingLives}X`;
+    }
+
+    checkGameOver() {
+        if (this.remainingLives <= 0) {
+            this.stopGame();
+        }
     }
 
     saveScore() {
@@ -205,5 +216,6 @@ class Game {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const game = new Game();
+    new Game();
 });
+
